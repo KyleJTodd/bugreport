@@ -1,7 +1,12 @@
 <template>
+
+
   <div class='bug-details container'>
     <div class="row justify-content-center">
-      <div class="card" style="width: 30rem;">
+      <h3>
+        <router-link :to="{ name: 'home', params:'/'}">Back to List</router-link>
+      </h3>
+      <div class="card" style="width: 40rem;">
         <div class="card-body">
           <h5 class="card-title">{{bug.title}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">Last Update: {{new Date(bug.createdAt).toLocaleDateString()}}</h6>
@@ -18,25 +23,35 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+                <h5 class="modal-title" id="exampleModalLabel" v-show="bug.closed">Add Comment</h5>
                 <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <form>
-                  <textarea rows="4" cols="50" placeholder="Enter Comments"></textarea>
+                <form @submit.prevent="handleSubmit ">
+                  <input type="text" placeholder="User Name" v-model="creator">
+                  <textarea rows="4" cols="50" placeholder="Enter Comments" v-model="content"></textarea>
 
 
+
+                  <button type="submit" class="btn btn-primary">Submit Note</button>
                 </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+
+
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="card" v-for="note in notes" :key="note._id">
+      <div class="card-body">
+        <h5 class="card-title">{{note.creator}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Date: {{new Date(note.updatedAt).toLocaleDateString()}}</h6>
+        <p class="card-text">{{note.content}}</p>
+        <a class="card-link">Edit</a>
+        <a class="card-link">Delete</a>
       </div>
     </div>
   </div>
@@ -52,24 +67,44 @@
 
   export default {
     name: 'BugDetails',
+    props: ['id'],
+    data() {
+      return {
+        creator: '',
+        content: '',
+
+      }
+    },
     mounted() {
       this.$store.dispatch('getBug', this.$route.params.id);
-      setTimeout(() => {
-        if (!this.bug._id) {
-          this.$router.push({ name: "home" })
-        }
-      }, 3000)
+      this.$store.dispatch('getNotes', this.id);
     },
     computed: {
       bug() {
         return this.$store.state.bug;
       },
+      notes() {
+        return this.$store.state.notes;
+      }
     },
     methods: {
       sendCloseBug(id) {
         return this.$store.dispatch('closeBug', id)
+      },
+      handleSubmit() {
+        let data = {
+          creator: this.creator,
+          content: this.content,
+          bug: this.id
+
+        }
+        this.$store.dispatch('createNote', data)
+      },
+      closeModal() {
+
       }
     },
+
     components: {
       CreateBug,
       Bugs,

@@ -15,6 +15,7 @@ export default new Router({
     {
       path: '/bug/:id',
       name: 'bug',
+      props: true,
       component: BugDetails
     }
   ]
