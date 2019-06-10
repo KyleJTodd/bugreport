@@ -1,18 +1,27 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="home container">
+
+    <CreateBug />
+    <bugs />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+  import Bugs from "@/components/Bugs.vue"
+  import CreateBug from "@/components/CreateBug.vue"
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
+  export default {
+    name: 'home',
+    mounted() {
+      this.$store.dispatch("getBugs");
+    },
+    computed: {
+
+
+    },
+    components: {
+      Bugs,
+      CreateBug
+    }
   }
-}
 </script>
