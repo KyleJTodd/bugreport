@@ -50,7 +50,14 @@ export default new Vuex.Store({
     closeBug({ commit, dispatch }, id) {
       let res = _api.delete('bugs/' + id)
         .then(res => {
-          dispatch("getBugs")
+          dispatch("getBug", id)
+        })
+    },
+    closeNote({ commit, dispatch }, data) {
+      debugger
+      let res = _api.delete('bugs/' + data.bugId + '/notes/' + data.noteId)
+        .then(res => {
+          dispatch("getNotes", data.bugId)
         })
     },
     async createNote({ commit, dispatch }, data) {

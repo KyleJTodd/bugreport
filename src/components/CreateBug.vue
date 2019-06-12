@@ -7,7 +7,6 @@
       <button type="submit">Add Bug</button>
     </form>
   </div>
-
 </template>
 
 <script>

@@ -12,9 +12,11 @@
           <h6 class="card-subtitle mb-2 text-muted">Last Update: {{new Date(bug.createdAt).toLocaleDateString()}}</h6>
           <p class="card-text">{{bug.description}}
           </p>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+            v-if="!bug.closed">
             Add Comment
           </button>
+          <h5 v-else>Closed</h5>
           &nbsp;
           <button class=" btn btn-success card-link" @click="sendCloseBug(bug._id)">Mark Resolved</button>
         </div>
@@ -23,7 +25,8 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel" v-show="bug.closed">Add Comment</h5>
+                <h5 class="modal-title" id="exampleModalLabel" v-if="!bug.closed">Add Comment</h5>
+
                 <button type="submit" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -35,7 +38,8 @@
 
 
 
-                  <button type="submit" class="btn btn-primary">Submit Note</button>
+                  <button type="submit" class="btn btn-primary">Submit
+                    Note</button>
                 </form>
 
 
@@ -51,7 +55,7 @@
         <h6 class="card-subtitle mb-2 text-muted">Date: {{new Date(note.updatedAt).toLocaleDateString()}}</h6>
         <p class="card-text">{{note.content}}</p>
         <a class="card-link">Edit</a>
-        <a class="card-link">Delete</a>
+        <a class="card-link" @click="sendCloseNote(note._id)">Delete</a>
       </div>
     </div>
   </div>
@@ -90,6 +94,14 @@
     methods: {
       sendCloseBug(id) {
         return this.$store.dispatch('closeBug', id)
+      },
+      sendCloseNote(data) {
+
+        let payload = {
+          noteId: data,
+          bugId: this.id
+        }
+        return this.$store.dispatch('closeNote', payload)
       },
       handleSubmit() {
         let data = {
